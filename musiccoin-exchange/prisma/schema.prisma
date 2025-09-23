@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  username      String   @unique
+  email         String   @unique
+  passwordHash  String
+  walletBalance Float    @default(1000)
+  trades        Trade[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Coin {
+  id        String   @id @default(cuid())
+  name      String
+  symbol    String   @unique
+  price     Float
+  trades    Trade[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TradeType {
+  buy
+  sell
+}
+
+model Trade {
+  id        String    @id @default(cuid())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  coin      Coin      @relation(fields: [coinId], references: [id])
+  coinId    String
+  amount    Float
+  type      TradeType
+  createdAt DateTime  @default(now())
+}
