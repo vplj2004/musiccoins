@@ -5,6 +5,6 @@ export function middleware() {
   return NextResponse.next();
 }
 
-export const config = { matcher: [] } as const;
+export const config = { matcher: [] };
 
 
